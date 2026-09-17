@@ -1,20 +1,25 @@
+import { useEffect, useState } from 'react'
 import './App.css'
+import CategoryPage from './pages/CategoryPage'
 
 const categories = [
   {
     title: 'Kadın',
     subtitle: 'Yeni sezon seçkisi',
     className: 'category-women',
+    href: '#women',
   },
   {
     title: 'Erkek',
     subtitle: 'Modern essentials',
     className: 'category-men',
+    href: '#men',
   },
   {
     title: 'Çocuk',
     subtitle: 'Küçük stiller',
     className: 'category-kids',
+    href: '#kids',
   },
 ]
 
@@ -42,11 +47,58 @@ const products = [
 ]
 
 function App() {
+  const [currentPage, setCurrentPage] = useState(
+    window.location.hash || '#home',
+  )
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPage(window.location.hash || '#home')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange)
+    }
+  }, [])
+
+  if (currentPage === '#women') {
+    return (
+      <CategoryPage
+  title="Women"
+  description="Saint Yux kadın koleksiyonu; güçlü siluetler, zamansız parçalar ve modern şehir stilini bir araya getirir."
+  category="Kadın"
+/>
+    )
+  }
+
+  if (currentPage === '#men') {
+    return (
+      <CategoryPage
+  title="Men"
+  description="Saint Yux erkek koleksiyonu; modern essentials, güçlü formlar ve sade bir şehir estetiği üzerine kuruludur."
+  category="Erkek"
+/>
+    )
+  }
+
+  if (currentPage === '#kids') {
+    return (
+      <CategoryPage
+  title="Kids"
+  description="Saint Yux çocuk koleksiyonu; konforu, modern çizgileri ve zamansız stili küçük dünyalarla buluşturur."
+  category="Çocuk"
+/>
+    )
+  }
+
   return (
     <div className="site">
       {/* HEADER */}
       <header className="header">
-        <a className="logo" href="#">
+        <a className="logo" href="#home">
           SAINT YUX
         </a>
 
@@ -62,6 +114,7 @@ function App() {
           <button aria-label="Ara">⌕</button>
           <button aria-label="Favoriler">♡</button>
           <button aria-label="Hesabım">♙</button>
+
           <button className="cart-button" aria-label="Sepet">
             Sepet
             <span>0</span>
@@ -126,7 +179,7 @@ function App() {
           <div className="category-grid">
             {categories.map((category) => (
               <a
-                href="#shop"
+                href={category.href}
                 className={`category-card ${category.className}`}
                 key={category.title}
               >
@@ -159,11 +212,11 @@ function App() {
                     ♡
                   </button>
 
-                  {index === 0 && <span className="product-badge">NEW</span>}
+                  {index === 0 && (
+                    <span className="product-badge">NEW</span>
+                  )}
 
-                  <button className="quick-add">
-                    Sepete ekle
-                  </button>
+                  <button className="quick-add">Sepete ekle</button>
                 </div>
 
                 <div className="product-info">
